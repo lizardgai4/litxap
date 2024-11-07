@@ -27,7 +27,7 @@ func (line Line) Run(dict Dictionary) (Line, error) {
 			lookup = part.Lookup
 		}
 
-		results, err := dict.LookupEntries(lookup)
+		results, err := dict.LookupEntries(strings.ToLower(lookup))
 		if err != nil {
 			if errors.Is(err, ErrEntryNotFound) {
 				continue
