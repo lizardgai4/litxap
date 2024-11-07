@@ -131,6 +131,7 @@ var suffixMap = map[string]Suffix{
 	"ti":               suffix(sraNewSyllable, "ti"),
 	"it":               suffix(sraStealCoda, "it"),
 	"ejectiveReplacer": suffix(sraAttach, "ejectiveReplacer"),
+	"r":                suffix(sraAttach, "r"),
 	"ru":               suffix(sraNewSyllable, "ru"),
 	"ur":               suffix(sraStealCoda, "ur"),
 	"yä":               suffix(sraNewSyllable, "yä"),

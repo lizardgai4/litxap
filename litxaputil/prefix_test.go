@@ -38,6 +38,10 @@ func TestApplyPrefixes(t *testing.T) {
 			curr: "tskxe", prefixes: "ay",
 			expected: "ay.tskxe", expectedOffset: 1,
 		},
+		{
+			curr: "o.e", prefixes: "ay",
+			expected: "a.yo.e", expectedOffset: 1,
+		},
 	}
 
 	for _, row := range table {
