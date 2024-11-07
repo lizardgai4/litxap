@@ -180,4 +180,34 @@ type Dictionary interface {
 	LookupEntries(word string) ([]Entry, error)
 }
 
+type MultiDictionary []Dictionary
+
+func (dm MultiDictionary) LookupEntries(word string) ([]Entry, error) {
+	if len(dm) == 0 {
+		return nil, ErrEntryNotFound
+	}
+
+	entries, err := dm[0].LookupEntries(word)
+	if err != nil && !errors.Is(err, ErrEntryNotFound) {
+		return nil, err
+	}
+
+	for _, dict := range dm[1:] {
+		next, err := dict.LookupEntries(word)
+		if err != nil && !errors.Is(err, ErrEntryNotFound) {
+			return nil, err
+		}
+
+		if len(next) > 0 {
+			entries = append(entries, next...)
+		}
+	}
+
+	if len(entries) == 0 {
+		return nil, ErrEntryNotFound
+	}
+
+	return entries, nil
+}
+
 var ErrEntryNotFound = errors.New("entry not found")

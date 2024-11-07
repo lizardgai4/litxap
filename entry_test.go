@@ -56,3 +56,44 @@ func TestParseEntry(t *testing.T) {
 		})
 	}
 }
+
+func TestMultiDictionary_LookupEntries(t *testing.T) {
+	mdGood := MultiDictionary{
+		dummyDictionary,
+		DummyDictionary{
+			"kameie":   *ParseEntry("k·a.m·e: <ei>: see into, understand"),
+			"sa'nokur": *ParseEntry("sa'.nok: -ur: nother"),
+		},
+	}
+	mdEmpty := MultiDictionary{}
+	mdBad := MultiDictionary{dummyDictionary, BrokenDictionary{}}
+	mdBad2 := MultiDictionary{BrokenDictionary{}}
+
+	res, err := mdEmpty.LookupEntries("sa'nokur")
+	assert.ErrorIs(t, err, ErrEntryNotFound)
+	assert.Nil(t, res)
+
+	res, err = mdBad.LookupEntries("sa'nokur")
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	res, err = mdBad2.LookupEntries("tìfmetok")
+	assert.Error(t, err)
+	assert.Nil(t, res)
+
+	res, err = mdGood.LookupEntries("mìfa")
+	assert.ErrorIs(t, err, ErrEntryNotFound)
+	assert.Nil(t, res)
+
+	res, err = mdGood.LookupEntries("kameie")
+	assert.NoError(t, err)
+	assert.Equal(t, res, []Entry{
+		*ParseEntry("k·a.m·e: <ei>: see, see into, understand, know (spiritual sense)"),
+		*ParseEntry("k··ä: <am,ei>: go"),
+		*ParseEntry("k·a.m·e: <ei>: see into, understand"),
+	})
+
+	res, err = mdGood.LookupEntries("sa'nokur")
+	assert.NoError(t, err)
+	assert.Equal(t, res, []Entry{*ParseEntry("sa'.nok: -ur: nother")})
+}
