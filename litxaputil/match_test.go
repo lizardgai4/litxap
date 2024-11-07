@@ -208,6 +208,12 @@ func TestMatchSyllables(t *testing.T) {
 			newSyllables: "ay.skxe",
 			newStress:    1,
 		},
+		{
+			word: "tsyìmawnun'i", syllables: "tì.syì.maw.nun.'i",
+			root: 1, stress: 4,
+			newSyllables: "tsyì.maw.nun.'i",
+			newStress:    3,
+		},
 	}
 
 	for _, row := range table {

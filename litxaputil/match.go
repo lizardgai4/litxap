@@ -151,6 +151,11 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 		return []string{curr[:len("s")+len(syllables[1])]}, curr[1+len(syllables[1]):], 2, 2
 	}
 
+	// Edge case: contracted tì-sX -> tsX
+	if len(syllables) >= 2 && syllables[0] == "tì" && strings.HasPrefix(currLower, "t"+syllables[1]) {
+		return []string{curr[:len("t")+len(syllables[1])]}, curr[1+len(syllables[1]):], 2, 2
+	}
+
 	// Edge case: contracted si-yu -> syu
 	if len(syllables) >= 2 && syllables[0] == "si" && syllables[1] == "yu" && strings.HasPrefix(currLower, "syu") {
 		return []string{curr[:len("syu")]}, curr[len("syu"):], 2, 2
