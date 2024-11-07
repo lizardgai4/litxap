@@ -5,6 +5,20 @@ import (
 )
 
 func MatchSyllables(word string, syllables []string, root, stress int) (newSyllables []string, newStress int) {
+	newSyllables, newStress = matchSyllables(word, syllables, root, stress, false)
+	if newSyllables != nil {
+		return
+	}
+
+	newSyllables, newStress = matchSyllables(word, syllables, root, stress, true)
+	if newSyllables != nil {
+		return
+	}
+
+	return
+}
+
+func matchSyllables(word string, syllables []string, root, stress int, allowFuse bool) (newSyllables []string, newStress int) {
 	newSyllables = make([]string, 0, len(syllables))
 	newStress = -1
 	curr := word
@@ -13,7 +27,7 @@ func MatchSyllables(word string, syllables []string, root, stress int) (newSylla
 	rootOffset := root
 
 	for len(syllables) > 0 || len(curr) > 0 {
-		matchedSyllables, next, n, stressPush := nextSyllable(curr, syllables, rootOffset >= 0)
+		matchedSyllables, next, n, stressPush := nextSyllable(curr, syllables, rootOffset >= 0, allowFuse)
 		if n == 0 {
 			newSyllables = nil
 			newStress = -1
@@ -45,24 +59,26 @@ func MatchSyllables(word string, syllables []string, root, stress int) (newSylla
 	return
 }
 
-func nextSyllable(curr string, syllables []string, allowLenition bool) ([]string, string, int, int) {
+func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse bool) ([]string, string, int, int) {
 	if len(syllables) == 0 || len(curr) == 0 {
 		return nil, curr, 0, 0
 	}
 	currLower := strings.ToLower(curr)
 
 	// Edge case: contracted k.k -> k
-	if len(syllables) >= 2 {
-		for _, tail := range fusableTails {
-			if strings.HasSuffix(syllables[0], tail) && strings.HasPrefix(syllables[1], tail) {
-				if strings.HasPrefix(currLower, syllables[0][:len(syllables[0])-len(tail)]+syllables[1]) {
-					l1 := len(syllables[0]) - 1
-					l2 := l1 + len(syllables[1])
+	if len(syllables) >= 2 && allowFuse {
+		for _, fusables := range [][]string{fusableTails, fusableMids} {
+			for _, fusable := range fusables {
+				if strings.HasSuffix(syllables[0], fusable) && strings.HasPrefix(syllables[1], fusable) {
+					if strings.HasPrefix(currLower, syllables[0][:len(syllables[0])-len(fusable)]+syllables[1]) {
+						l1 := len(syllables[0]) - 1
+						l2 := l1 + len(syllables[1])
 
-					return []string{curr[:l1], curr[l1:l2]}, curr[l2:], 2, 2
+						return []string{curr[:l1], curr[l1:l2]}, curr[l2:], 2, 2
+					}
+
+					break
 				}
-
-				break
 			}
 		}
 	}
@@ -80,7 +96,7 @@ func nextSyllable(curr string, syllables []string, allowLenition bool) ([]string
 		prev0 := syllables[0]
 		syllables[0] = syllables[0] + "-"
 
-		matchedSyllables, next, n, n2 := nextSyllable(curr, syllables, allowLenition)
+		matchedSyllables, next, n, n2 := nextSyllable(curr, syllables, allowLenition, allowFuse)
 		syllables[0] = prev0
 		if n > 0 {
 			matchedSyllables[0] += "-"
@@ -100,7 +116,7 @@ func nextSyllable(curr string, syllables []string, allowLenition bool) ([]string
 		syllables = append(syllables[:0:0], syllables...)
 		syllables[0] = syllables[0][1:]
 
-		if matchedSyllables, next, n, n2 := nextSyllable(curr, syllables, allowLenition); n > 0 {
+		if matchedSyllables, next, n, n2 := nextSyllable(curr, syllables, allowLenition, allowFuse); n > 0 {
 			return matchedSyllables, next, n, n2
 		}
 	}
@@ -178,4 +194,5 @@ func swapInitialEjective(s string) (string, bool) {
 var ejectives = []string{"px", "tx", "kx"}
 var ejectiveAlts = []string{"b", "d", "g"}
 
-var fusableTails = []string{"px", "tx", "kx", "m", "n", "l", "ejectiveReplacer", "p", "t", "k"}
+var fusableTails = []string{"px", "tx", "kx", "m", "n", "l", "r", "p", "t", "k"}
+var fusableMids = []string{"a", "ä", "e", "i", "ì", "o", "u", "ù"}
