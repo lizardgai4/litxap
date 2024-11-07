@@ -55,7 +55,7 @@ func ApplyInfixes(curr []string, infixNames []string, start int, stress int, pos
 		}
 	}
 
-	hasStressShift := stress == start && positions[0] == [2]int{0, 0}
+	hasStressShift := stress != start && positions[0] == [2]int{0, 0}
 	allInfixesTogether := positions[1] == positions[0]
 
 	if infixes[0] != nil {
@@ -152,7 +152,8 @@ var infixMap = map[string]Infix{
 	"eyk":   infix(0, "ey", "k"),
 	"äpeyk": infix(0, "ä", "pey", "k"),
 
-	"us": infix(1, "u", "s"),
+	"us":  infix(1, "u", "s"),
+	"awn": infix(1, "aw", "n"),
 
 	"am": infix(1, "a", "m"),
 	"ìm": infix(1, "ì", "m"),

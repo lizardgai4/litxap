@@ -179,59 +179,73 @@ func TestApplyInfixes(t *testing.T) {
 		// Stress shift
 		{
 			curr: "i.nan", infixes: "er",
-			start: 0, stress: 0,
+			start: 0, stress: 1,
 			positions: [2][2]int{{0, 0}, {1, 1}},
 
-			expectedSyllables: "e.ri.nan", expectedStress: 0,
+			expectedSyllables: "e.ri.nan", expectedStress: 1,
 		},
 		{
 			curr: "i.nan", infixes: "ìyev",
-			start: 0, stress: 0,
+			start: 0, stress: 1,
 			positions: [2][2]int{{0, 0}, {1, 1}},
 
-			expectedSyllables: "ì.ye.vi.nan", expectedStress: 1,
+			expectedSyllables: "ì.ye.vi.nan", expectedStress: 2,
 		},
 		{
 			curr: "o.mum", infixes: "eyk,ol",
-			start: 0, stress: 0,
+			start: 0, stress: 1,
 			positions: [2][2]int{{0, 0}, {1, 1}},
 
-			expectedSyllables: "ey.ko.lo.mum", expectedStress: 1,
+			expectedSyllables: "ey.ko.lo.mum", expectedStress: 2,
+		},
+		{
+			curr: "o.mum", infixes: "äpeyk",
+			start: 0, stress: 1,
+			positions: [2][2]int{{0, 0}, {1, 1}},
+
+			expectedSyllables: "ä.pey.ko.mum", expectedStress: 2,
 		},
 		{
 			curr: "eyk", infixes: "äp",
 			start: 0, stress: 0,
 			positions: [2][2]int{{0, 0}, {0, 0}},
 
-			expectedSyllables: "ä.peyk", expectedStress: 0,
+			expectedSyllables: "ä.peyk", expectedStress: 1,
 		},
 		{
 			curr: "eyk", infixes: "äpeyk",
 			start: 0, stress: 0,
 			positions: [2][2]int{{0, 0}, {0, 0}},
 
-			expectedSyllables: "ä.pey.keyk", expectedStress: 1,
+			expectedSyllables: "ä.pey.keyk", expectedStress: 2,
 		},
 		{
 			curr: "eyk", infixes: "äpeyk,iyev,ei",
 			start: 0, stress: 0,
 			positions: [2][2]int{{0, 0}, {0, 0}},
 
-			expectedSyllables: "ä.pey.ki.ye.ve.i.eyk", expectedStress: 5,
+			expectedSyllables: "ä.pey.ki.ye.ve.i.eyk", expectedStress: 6,
 		},
 		{
 			curr: "eyk", infixes: "äp,er,äng",
 			start: 0, stress: 0,
 			positions: [2][2]int{{0, 0}, {0, 0}},
 
-			expectedSyllables: "ä.pe.rä.ngeyk", expectedStress: 2,
+			expectedSyllables: "ä.pe.rä.ngeyk", expectedStress: 3,
 		},
 		{
 			curr: "eyk", infixes: "äp,er,äng",
 			start: 0, stress: 0,
 			positions: [2][2]int{{0, 0}, {0, 0}},
 
-			expectedSyllables: "ä.pe.rä.ngeyk", expectedStress: 2,
+			expectedSyllables: "ä.pe.rä.ngeyk", expectedStress: 3,
+		},
+		{
+			curr: "i.nan", infixes: "äp,er,äng",
+			start: 0, stress: 1,
+			positions: [2][2]int{{0, 0}, {0, 0}},
+
+			expectedSyllables: "ä.pe.rä.ngi.nan", expectedStress: 3,
 		},
 	}
 
