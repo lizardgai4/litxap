@@ -23,21 +23,20 @@ func (suffix Suffix) Apply(curr []string) []string {
 		panic("Suffix attempted attached to empty word")
 	}
 
+	lastSyllable := curr[len(curr)-1]
+
 	switch suffix.reanalysis {
 	case sraNewSyllable:
 		return append(curr, suffix.syllableSplit...)
 	case sraAttach:
-		lastSyllable := curr[len(curr)-1]
 		for _, core := range attachableCores {
 			if strings.HasSuffix(lastSyllable, core) {
 				curr[len(curr)-1] = lastSyllable + suffix.syllableSplit[0]
 				return append(curr, suffix.syllableSplit[1:]...)
 			}
 		}
-
 		return append(curr, suffix.syllableSplit...)
 	case sraStealCoda:
-		lastSyllable := curr[len(curr)-1]
 		unStealableCoda := false
 		for _, coda := range unStealableCodas {
 			if strings.HasSuffix(lastSyllable, coda) {

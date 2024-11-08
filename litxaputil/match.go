@@ -76,8 +76,6 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 
 						return []string{curr[:l1], curr[l1:l2]}, curr[l2:], 2, 2
 					}
-
-					break
 				}
 			}
 		}
@@ -101,6 +99,28 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 		if n > 0 {
 			matchedSyllables[0] += "-"
 			return matchedSyllables, next, n, n2
+		}
+	}
+
+	// Edge case: Xng.l -> X.ngal
+	if len(syllables) >= 2 && strings.HasSuffix(syllables[0], "ng") {
+		l0 := len(syllables[0])
+		l1 := len(syllables[1])
+		lng := len("ng")
+
+		if strings.HasPrefix(currLower, syllables[0][:l0]+"a"+syllables[1]) {
+			return []string{curr[:l0-lng], "nga" + curr[l0+len("a"):l0+len("a")+l1]}, curr[l0+l1+1:], 2, 2
+		}
+	}
+
+	// Edge case: Xng.yä -> X.nge.yä
+	if len(syllables) >= 2 && strings.HasSuffix(syllables[0], "ng") {
+		l0 := len(syllables[0])
+		l1 := len(syllables[1])
+		lng := len("ng")
+
+		if strings.HasPrefix(currLower, syllables[0][:l0]+"e"+syllables[1]) {
+			return []string{curr[:l0-lng], "nge", curr[l0+len("a") : l0+len("a")+l1]}, curr[l0+l1+1:], 2, 2
 		}
 	}
 

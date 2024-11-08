@@ -32,6 +32,8 @@ func TestApplySuffixes(t *testing.T) {
 		{"krr", "o", "krr.o"},
 		{"kxll", "ä", "kxll.ä"},
 		{"po", "r", "por"},
+		{"'e.kong", "ä", "'e.ko.ngä"},
+		{"'e.kong", "teri", "'e.kong.te.ri"},
 	}
 
 	for _, row := range table {
