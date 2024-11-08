@@ -234,9 +234,9 @@ func TestMatchSyllables(t *testing.T) {
 		},
 		{
 			word: "Oengeyä", syllables: "o.eng.yä",
-			root: 1, stress: 2,
+			root: 1, stress: 1,
 			newSyllables: "O.e.nge.yä",
-			newStress:    3,
+			newStress:    1,
 		},
 		{
 			word: "'Ekxongeyä", syllables: "'e.kxong.yä",

@@ -120,7 +120,7 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 		lng := len("ng")
 
 		if strings.HasPrefix(currLower, syllables[0][:l0]+"e"+syllables[1]) {
-			return []string{curr[:l0-lng], "nge", curr[l0+len("a") : l0+len("a")+l1]}, curr[l0+l1+1:], 2, 2
+			return []string{curr[:l0-lng], "nge", curr[l0+len("a") : l0+len("a")+l1]}, curr[l0+l1+1:], 2, 3
 		}
 	}
 
