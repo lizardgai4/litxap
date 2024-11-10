@@ -13,8 +13,6 @@ func TestRomanize(t *testing.T) {
 		stress   [][]int
 	}{
 		// One syllable
-		{"", [][][]string{}, [][]int{}},
-		{"  ", [][][]string{}, [][]int{}},
 		{"ɛ", [][][]string{{{"e"}}}, [][]int{{-1}}},
 		{"ʔawk'", [][][]string{{{"'awkx"}}}, [][]int{{-1}}},
 		{"fko", [][][]string{{{"fko"}}}, [][]int{{-1}}},
@@ -59,6 +57,7 @@ func TestRomanize(t *testing.T) {
 		{"o.ˈɪsss s·i", [][][]string{{{"o", "ìsss"}, {"si"}}}, [][]int{{1, -1}}},
 		// Empty string
 		{"", [][][]string{}, [][]int{}},
+		{"  ", [][][]string{}, [][]int{}},
 	}
 
 	for _, row := range table {
