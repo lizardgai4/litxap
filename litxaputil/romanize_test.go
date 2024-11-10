@@ -12,7 +12,7 @@ func TestRomanize(t *testing.T) {
 		expected [][][]string
 		stress   [][]int
 	}{
-		// Empty strings
+		// Nothing to Romanize
 		{"", [][][]string{}, [][]int{}},
 		{"  ", [][][]string{}, [][]int{}},
 		// One syllable
