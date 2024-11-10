@@ -8,39 +8,14 @@ import (
 	"unicode/utf8"
 )
 
-func RunLine(line string, dictionary Dictionary, mustDouble map[string]string) (Line, error) {
-	return ParseLine(line).Run(dictionary, mustDouble)
+func RunLine(line string, dictionary Dictionary) (Line, error) {
+	return ParseLine(line).Run(dictionary)
 }
 
 type Line []LinePart
 
-func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error) {
+func (line Line) Run(dict Dictionary) (Line, error) {
 	newLine := append(line[:0:0], line...)
-
-	for {
-		found := false
-		for i, p0 := range newLine[:len(newLine)-2] {
-			md, ok := mustDouble[strings.ToLower(p0.Raw)]
-			if !ok {
-				continue
-			}
-
-			p1 := newLine[i+1]
-			p2 := newLine[i+2]
-
-			if p0.IsWord && !p1.IsWord && p2.IsWord && md == strings.ToLower(p2.Raw) {
-				newLine = append(newLine[:i+1], newLine[i+3:]...)
-				newLine[i].Raw = p0.Raw + p1.Raw + p2.Raw
-
-				found = true
-				break
-			}
-		}
-
-		if !found {
-			break
-		}
-	}
 
 	for i, part := range newLine {
 		if !part.IsWord {
@@ -76,6 +51,43 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 	}
 
 	return newLine, nil
+}
+
+func (line Line) Merge(mustDouble map[string]string) Line {
+	first := true
+	newLine := line
+
+	for {
+		found := false
+		for i, p0 := range newLine[:len(newLine)-2] {
+			md, ok := mustDouble[strings.ToLower(p0.Raw)]
+			if !ok {
+				continue
+			}
+
+			p1 := newLine[i+1]
+			p2 := newLine[i+2]
+
+			if p0.IsWord && !p1.IsWord && p2.IsWord && md == strings.ToLower(p2.Raw) {
+				if first == true {
+					newLine = append(newLine[:0:0], newLine...)
+					first = false
+				}
+
+				newLine = append(newLine[:i+1], newLine[i+3:]...)
+				newLine[i].Raw = p0.Raw + p1.Raw + p2.Raw
+
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			break
+		}
+	}
+
+	return newLine
 }
 
 // ParseLine splits out the words from a line of text.
