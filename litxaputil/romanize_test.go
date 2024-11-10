@@ -13,6 +13,8 @@ func TestRomanize(t *testing.T) {
 		stress   [][]int
 	}{
 		// One syllable
+		{"", [][][]string{}, [][]int{}},
+		{"  ", [][][]string{}, [][]int{}},
 		{"ɛ", [][][]string{{{"e"}}}, [][]int{{-1}}},
 		{"ʔawk'", [][][]string{{{"'awkx"}}}, [][]int{{-1}}},
 		{"fko", [][][]string{{{"fko"}}}, [][]int{{-1}}},
@@ -24,6 +26,8 @@ func TestRomanize(t *testing.T) {
 		{"k'ḷ", [][][]string{{{"kxll"}}}, [][]int{{-1}}},
 		{"po", [][][]string{{{"po"}}}, [][]int{{-1}}},
 		{"sk'awŋ", [][][]string{{{"skxawng"}}}, [][]int{{-1}}},
+		{"tʃok'", [][][]string{{{"chokx"}}}, [][]int{{-1}}},
+		{"ʃ·awm", [][][]string{{{"shawm"}}}, [][]int{{-1}}},
 		//Multi syllable
 		{"tɪ.ˈfmɛ.tok̚", [][][]string{{{"tì", "fme", "tok"}}}, [][]int{{1}}},
 		{"u.ˈvan", [][][]string{{{"u", "van"}}}, [][]int{{1}}},
@@ -31,6 +35,11 @@ func TestRomanize(t *testing.T) {
 		{"ˈt·a.ɾ·on", [][][]string{{{"ta", "ron"}}}, [][]int{{0}}},
 		{"ˈʔɛ.koŋ", [][][]string{{{"'e", "kong"}}}, [][]int{{0}}},
 		{"ɛ.ˈjawɾ", [][][]string{{{"e", "yawr"}}}, [][]int{{1}}},
+		{"sæ.ˈfɾɪp̚", [][][]string{{{"sä", "frìp"}}}, [][]int{{1}}},
+		{"ˈuk̚.jom", [][][]string{{{"uk", "yom"}}}, [][]int{{0}}},
+		{"ˈmo.ʔat̚", [][][]string{{{"mo", "'at"}}}, [][]int{{0}}},
+		{"t͡suʔ.ˈtɛj", [][][]string{{{"tsu'", "tey"}}}, [][]int{{1}}},
+		{"ɾi.ˈnaʔ", [][][]string{{{"ri", "na'"}}}, [][]int{{1}}},
 		// Flexible syllable stress
 		{"aj.ˈfo] or [ˈaj.fo", [][][]string{{{"ay", "fo"}}, {{"ay", "fo"}}}, [][]int{{1}, {0}}},
 		{"ˈɪ.læ] or [ɪ.ˈlæ", [][][]string{{{"ì", "lä"}}, {{"ì", "lä"}}}, [][]int{{0}, {1}}},
@@ -47,6 +56,7 @@ func TestRomanize(t *testing.T) {
 		{"t͡sa.ˈhɛjl s·i", [][][]string{{{"tsa", "heyl"}, {"si"}}}, [][]int{{1, -1}}},
 		{"ˈnɪ.ˌju ˈjoɾ.kɪ", [][][]string{{{"nì", "yu"}, {"yor", "kì"}}}, [][]int{{0, 0}}},
 		{"t͡sawl sl·u", [][][]string{{{"tsawl"}, {"slu"}}}, [][]int{{-1, -1}}},
+		{"o.ˈɪsss s·i", [][][]string{{{"o", "ìsss"}, {"si"}}}, [][]int{{1, -1}}},
 		// Empty string
 		{"", [][][]string{}, [][]int{}},
 	}

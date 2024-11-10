@@ -17,16 +17,33 @@ type Line []LinePart
 func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error) {
 	newLine := append(line[:0:0], line...)
 
-	skip := false
+	for {
+		found := false
+		for i, p0 := range newLine[:len(newLine)-2] {
+			md, ok := mustDouble[strings.ToLower(p0.Raw)]
+			if !ok {
+				continue
+			}
+
+			p1 := newLine[i+1]
+			p2 := newLine[i+2]
+
+			if p0.IsWord && !p1.IsWord && p2.IsWord && md == strings.ToLower(p2.Raw) {
+				newLine = append(newLine[:i+1], newLine[i+3:]...)
+				newLine[i].Raw = p0.Raw + p1.Raw + p2.Raw
+
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			break
+		}
+	}
 
 	for i, part := range newLine {
 		if !part.IsWord {
-			continue
-		}
-
-		// If we found a multiword word, don't duplicate
-		if skip {
-			skip = false
 			continue
 		}
 
@@ -37,16 +54,6 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 
 		lookup = strings.ToLower(lookup)
 
-		// Collect multiword words with no parts that can be looked up
-		maybeSkip := false
-
-		if _, ok := mustDouble[lookup]; ok {
-			if i+2 < len(newLine) {
-				lookup += strings.ToLower(newLine[i+1].Raw + newLine[i+2].Raw)
-				maybeSkip = true
-			}
-		}
-
 		results, err := dict.LookupEntries(lookup)
 		if err != nil {
 			if errors.Is(err, ErrEntryNotFound) {
@@ -54,9 +61,6 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 			}
 
 			return nil, fmt.Errorf("failed to lookup \"%s\": %w", lookup, err)
-		} else if maybeSkip {
-			// If we found a possible multiword word and it matches, skip the next one
-			skip = true
 		}
 
 		for _, result := range results {

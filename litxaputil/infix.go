@@ -6,7 +6,7 @@ func infix(p int, s ...string) Infix {
 	return Infix{Pos: p, SyllableSplit: s}
 }
 
-// An Infix has data and behavior in order to insert itself.
+// An Infix containsAnyRuneAt data and behavior in order to insert itself.
 type Infix struct {
 	// Pos is for where it'll fit in.
 	Pos int

@@ -7,22 +7,30 @@ import (
 )
 
 var dummyDictionary = DummyDictionary{
-	"kaltxì":    *ParseEntry("kal.*txì"),
-	"ma":        *ParseEntry("ma"),
-	"fmetokyu":  *ParseEntry("fme.tok: -yu"),
-	"ayhapxìtu": *ParseEntry("ha.*pxì.tu: ay-"),
-	"soaiä":     *ParseEntry("so.*a.i.a: -ä"),
-	"ngeyä":     *ParseEntry("nga: -yä"),
-	"lu":        *ParseEntry("lu"),
-	"oeru":      *ParseEntry("o.e: -ru"),
-	"let'eylan": *ParseEntry("let.*'ey.lan"),
-	"nìwotx":    *ParseEntry("nì.*wotx"),
-	"oel":       *ParseEntry("o.e: -l"),
-	"ngati":     *ParseEntry("nga: -ti"),
-	"kameie":    *ParseEntry("k·a.m·e: <ei>: see, see into, understand, know (spiritual sense)"),
-	"kameie:0":  *ParseEntry("k··ä: <am,ei>: go"),
-	"säkeynven": *ParseEntry("sä.keyn.*ven"),
-	"vola":      *ParseEntry("vol: -a"),
+	"kaltxì":        *ParseEntry("kal.*txì"),
+	"ma":            *ParseEntry("ma"),
+	"fmetokyu":      *ParseEntry("fme.tok: -yu"),
+	"ayhapxìtu":     *ParseEntry("ha.*pxì.tu: ay-"),
+	"soaiä":         *ParseEntry("so.*a.i.a: -ä"),
+	"ngeyä":         *ParseEntry("nga: -yä"),
+	"lu":            *ParseEntry("lu"),
+	"oeru":          *ParseEntry("o.e: -ru"),
+	"let'eylan":     *ParseEntry("let.*'ey.lan"),
+	"nìwotx":        *ParseEntry("nì.*wotx"),
+	"oel":           *ParseEntry("o.e: -l"),
+	"ngati":         *ParseEntry("nga: -ti"),
+	"kameie":        *ParseEntry("k·a.m·e: <ei>: see, see into, understand, know (spiritual sense)"),
+	"kameie:0":      *ParseEntry("k··ä: <am,ei>: go"),
+	"säkeynven":     *ParseEntry("sä.keyn.*ven"),
+	"vola":          *ParseEntry("vol: -a"),
+	"tsafneioanghu": *ParseEntry("i.*o.ang: tsa-fne- -hu"),
+	"rä'ä":          *ParseEntry("rä.*'ä"),
+	"tsaheyl si":    *ParseEntry("tsa.heyl.* s··i"),
+	"'eylan":        *ParseEntry("'ey.lan"),
+}
+
+var mustDouble = map[string]string{
+	"tsaheyl": "si",
 }
 
 func TestRunLine(t *testing.T) {
@@ -122,13 +130,36 @@ func TestRunLine(t *testing.T) {
 				LinePart{Raw: "."},
 			},
 		},
+		{
+			input: "Tsafneioanghu tsaheyl si rä'ä, ma 'eylan.",
+			expected: Line{
+				LinePart{Raw: "Tsafneioanghu", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"Tsa", "fne", "i", "o", "ang", "hu"}, 3, dummyDictionary["tsafneioanghu"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "tsaheyl si", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"tsa", "heyl", " si"}, 2, dummyDictionary["tsaheyl si"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "rä'ä", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"rä", "'ä"}, 1, dummyDictionary["rä'ä"]},
+				}},
+				LinePart{Raw: ", "},
+				LinePart{Raw: "ma", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"ma"}, 0, dummyDictionary["ma"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "'eylan", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"'ey", "lan"}, 0, dummyDictionary["'eylan"]},
+				}},
+				LinePart{Raw: "."},
+			},
+		},
 	}
-
-	doubles := map[string]string{"tsaheyl": "si"}
 
 	for _, row := range table {
 		t.Run(row.input, func(t *testing.T) {
-			res, err := RunLine(row.input, dummyDictionary, doubles)
+			res, err := RunLine(row.input, dummyDictionary, mustDouble)
 			assert.NoError(t, err)
 			assert.Equal(t, row.expected, res)
 		})
