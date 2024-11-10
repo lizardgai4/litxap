@@ -29,7 +29,7 @@ func TestRomanize(t *testing.T) {
 		{"sk'awŋ", [][][]string{{{"skxawng"}}}, [][]int{{-1}}},
 		{"tʃok'", [][][]string{{{"chokx"}}}, [][]int{{-1}}},
 		{"ʃ·awm", [][][]string{{{"shawm"}}}, [][]int{{-1}}},
-		//Multi syllable
+		// Multi syllable
 		{"tɪ.ˈfmɛ.tok̚", [][][]string{{{"tì", "fme", "tok"}}}, [][]int{{1}}},
 		{"u.ˈvan", [][][]string{{{"u", "van"}}}, [][]int{{1}}},
 		{"ˈu.ɾan", [][][]string{{{"u", "ran"}}}, [][]int{{0}}},
