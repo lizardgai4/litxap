@@ -2,8 +2,9 @@ package litxap
 
 import (
 	"errors"
-	"github.com/gissleh/litxap/litxaputil"
 	"strings"
+
+	"github.com/gissleh/litxap/litxaputil"
 )
 
 type Entry struct {

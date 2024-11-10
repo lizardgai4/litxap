@@ -1,8 +1,9 @@
 package litxap
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var dummyDictionary = DummyDictionary{
@@ -123,9 +124,11 @@ func TestRunLine(t *testing.T) {
 		},
 	}
 
+	doubles := map[string]string{"tsaheyl": "si"}
+
 	for _, row := range table {
 		t.Run(row.input, func(t *testing.T) {
-			res, err := RunLine(row.input, dummyDictionary)
+			res, err := RunLine(row.input, dummyDictionary, doubles)
 			assert.NoError(t, err)
 			assert.Equal(t, row.expected, res)
 		})
@@ -133,7 +136,8 @@ func TestRunLine(t *testing.T) {
 }
 
 func TestRunLine_Fail(t *testing.T) {
-	line, err := RunLine("Kaltxì, ma kifkey!", BrokenDictionary{})
+	doubles := map[string]string{"tsaheyl": "si"}
+	line, err := RunLine("Kaltxì, ma kifkey!", BrokenDictionary{}, doubles)
 
 	assert.Error(t, err)
 	assert.Nil(t, line)

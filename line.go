@@ -8,17 +8,25 @@ import (
 	"unicode/utf8"
 )
 
-func RunLine(line string, dictionary Dictionary) (Line, error) {
-	return ParseLine(line).Run(dictionary)
+func RunLine(line string, dictionary Dictionary, mustDouble map[string]string) (Line, error) {
+	return ParseLine(line).Run(dictionary, mustDouble)
 }
 
 type Line []LinePart
 
-func (line Line) Run(dict Dictionary) (Line, error) {
+func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error) {
 	newLine := append(line[:0:0], line...)
+
+	skip := false
 
 	for i, part := range newLine {
 		if !part.IsWord {
+			continue
+		}
+
+		// If we found a multiword word, don't duplicate
+		if skip {
+			skip = false
 			continue
 		}
 
@@ -27,13 +35,28 @@ func (line Line) Run(dict Dictionary) (Line, error) {
 			lookup = part.Lookup
 		}
 
-		results, err := dict.LookupEntries(strings.ToLower(lookup))
+		lookup = strings.ToLower(lookup)
+
+		// Collect multiword words with no parts that can be looked up
+		maybeSkip := false
+
+		if _, ok := mustDouble[lookup]; ok {
+			if i+2 < len(newLine) {
+				lookup += strings.ToLower(newLine[i+1].Raw + newLine[i+2].Raw)
+				maybeSkip = true
+			}
+		}
+
+		results, err := dict.LookupEntries(lookup)
 		if err != nil {
 			if errors.Is(err, ErrEntryNotFound) {
 				continue
 			}
 
 			return nil, fmt.Errorf("failed to lookup \"%s\": %w", lookup, err)
+		} else if maybeSkip {
+			// If we found a possible multiword word and it matches, skip the next one
+			skip = true
 		}
 
 		for _, result := range results {
