@@ -40,7 +40,7 @@ func (line Line) Run(dict Dictionary) (Line, error) {
 
 		for _, result := range results {
 			syllables, stress := RunWord(part.Raw, result)
-			if syllables != nil && stress >= 0 {
+			if syllables != nil {
 				newLine[i].Matches = append(newLine[i].Matches, LinePartMatch{
 					Syllables: syllables,
 					Stress:    stress,

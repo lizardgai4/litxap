@@ -42,8 +42,8 @@ func TestRunWord(t *testing.T) {
 			Res: "tsuk.ka.nom", ResStress: 1,
 		},
 		{
-			Raw: "tskxekeng sìsyi", Entry: "tskxe.keng. s··i: <ìsy>",
-			Res: "tskxe.keng. sì.syi", ResStress: 0,
+			Raw: "tskxekeng sìsyi", Entry: "tskxe.keng.s··i: <ìsy>",
+			Res: "tskxe.keng. .sì.syi", ResStress: 0,
 		},
 		{
 			Raw: "ayskxe", Entry: "tskxe: ay-",
@@ -52,6 +52,10 @@ func TestRunWord(t *testing.T) {
 		{
 			Raw: "tanlokxe", Entry: "txan.lo.*kxe",
 			Res: "tan.lo.kxe", ResStress: 2,
+		},
+		{
+			Raw: "Tsaheyl", Entry: "tsa.heyl: no_stress",
+			Res: "Tsa.heyl", ResStress: -1,
 		},
 	}
 

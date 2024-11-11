@@ -27,6 +27,10 @@ var dummyDictionary = DummyDictionary{
 	"rä'ä":          *ParseEntry("rä.*'ä"),
 	"tsaheyl si":    *ParseEntry("tsa.heyl.*s··i"),
 	"'eylan":        *ParseEntry("'ey.lan"),
+	"tsaheyl":       *ParseEntry("tsa.heyl: no_stress"),
+	"soli":          *ParseEntry("s··i: <ol>"),
+	"po":            *ParseEntry("po"),
+	"ikranhu":       *ParseEntry("ik.ran: -hu"),
 }
 
 var mustDouble = map[string]string{
@@ -153,6 +157,28 @@ func TestRunLine(t *testing.T) {
 				LinePart{Raw: " "},
 				LinePart{Raw: "'eylan", IsWord: true, Matches: []LinePartMatch{
 					{[]string{"'ey", "lan"}, 0, dummyDictionary["'eylan"]},
+				}},
+				LinePart{Raw: "."},
+			},
+		},
+		{
+			input:       "Po tsaheyl soli ikranhu.",
+			withDoubles: false,
+			expected: Line{
+				LinePart{Raw: "Po", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"Po"}, 0, dummyDictionary["po"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "tsaheyl", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"tsa", "heyl"}, -1, dummyDictionary["tsaheyl"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "soli", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"so", "li"}, 1, dummyDictionary["soli"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "ikranhu", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"ik", "ran", "hu"}, 0, dummyDictionary["ikranhu"]},
 				}},
 				LinePart{Raw: "."},
 			},

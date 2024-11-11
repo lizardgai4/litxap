@@ -55,7 +55,7 @@ func ApplyInfixes(curr []string, infixNames []string, start int, stress int, pos
 		}
 	}
 
-	hasStressShift := stress != start && positions[0] == [2]int{0, 0}
+	hasStressShift := stress > start && positions[0] == [2]int{0, 0}
 	allInfixesTogether := positions[1] == positions[0]
 
 	if infixes[0] != nil {
