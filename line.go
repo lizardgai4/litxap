@@ -6,6 +6,9 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	fwew_lib "github.com/fwew/fwew-lib/v5"
+	"github.com/gissleh/litxap/litxaputil"
 )
 
 func RunLine(line string, dictionary Dictionary, mustDouble map[string]string) (Line, error) {
@@ -17,7 +20,7 @@ type Line []LinePart
 func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error) {
 	newLine := append(line[:0:0], line...)
 
-	for {
+	/*for {
 		found := false
 		for i, p0 := range newLine[:len(newLine)-2] {
 			md, ok := mustDouble[strings.ToLower(p0.Raw)]
@@ -40,7 +43,7 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 		if !found {
 			break
 		}
-	}
+	}*/
 
 	for i, part := range newLine {
 		if !part.IsWord {
@@ -56,6 +59,37 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 
 		results, err := dict.LookupEntries(lookup)
 		if err != nil {
+			// See if it's tere
+			entry, ok := mustDouble[strings.ToLower(lookup)]
+
+			// If it's not there, try deconjugating
+			if !ok {
+				entries := fwew_lib.Deconjugate(lookup)
+				for _, entry2 := range entries {
+					if entry2.InsistPOS != "any" && entry2.InsistPOS != "n." {
+						continue
+					}
+					entry3, ok2 := mustDouble[strings.ToLower(entry2.Word)]
+					if ok2 {
+						ok = true
+						entry = entry3
+						break
+					}
+				}
+			}
+
+			// If it's in either place, see the Romanization
+			if ok {
+				// Romanize and find stress from the IPA
+				syllables, stress := litxaputil.RomanizeIPA(entry)
+				if syllables != nil && stress[0][0] >= 0 {
+					newLine[i].Matches = append(newLine[i].Matches, LinePartMatch{
+						Syllables: syllables[0][0],
+						Stress:    stress[0][0],
+					})
+				}
+			}
+
 			if errors.Is(err, ErrEntryNotFound) {
 				continue
 			}

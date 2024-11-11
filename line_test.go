@@ -25,12 +25,18 @@ var dummyDictionary = DummyDictionary{
 	"vola":          *ParseEntry("vol: -a"),
 	"tsafneioanghu": *ParseEntry("i.*o.ang: tsa-fne- -hu"),
 	"rä'ä":          *ParseEntry("rä.*'ä"),
-	"tsaheyl si":    *ParseEntry("tsa.heyl.* s··i"),
+	"si":            *ParseEntry("s··i"),
 	"'eylan":        *ParseEntry("'ey.lan"),
+	"tok":           *ParseEntry("t··ok"),
 }
 
 var mustDouble = map[string]string{
-	"tsaheyl": "si",
+	"latopin": "ˈla.to.pin",
+	"nìyu":    "ˈnɪ.ˌju",
+	"tsaheyl": "t͡sa.ˈhɛjl",
+	"tsawlak": "ˈt͡saw.lak̚",
+	"utraya":  "ˈut.ɾa.ja",
+	"yorkì":   "ˈjoɾ.kɪ",
 }
 
 func TestRunLine(t *testing.T) {
@@ -131,18 +137,22 @@ func TestRunLine(t *testing.T) {
 			},
 		},
 		{
-			input: "Tsafneioanghu tsaheyl si rä'ä, ma 'eylan.",
+			input: "Tsafneioanghu tsaheyl rä'ä si, ma 'eylan.",
 			expected: Line{
 				LinePart{Raw: "Tsafneioanghu", IsWord: true, Matches: []LinePartMatch{
 					{[]string{"Tsa", "fne", "i", "o", "ang", "hu"}, 3, dummyDictionary["tsafneioanghu"]},
 				}},
 				LinePart{Raw: " "},
-				LinePart{Raw: "tsaheyl si", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"tsa", "heyl", " si"}, 2, dummyDictionary["tsaheyl si"]},
+				LinePart{Raw: "tsaheyl", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"tsa", "heyl"}, 1, dummyDictionary["tsaheyl"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "rä'ä", IsWord: true, Matches: []LinePartMatch{
 					{[]string{"rä", "'ä"}, 1, dummyDictionary["rä'ä"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "si", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"si"}, 0, dummyDictionary["si"]},
 				}},
 				LinePart{Raw: ", "},
 				LinePart{Raw: "ma", IsWord: true, Matches: []LinePartMatch{
@@ -153,6 +163,26 @@ func TestRunLine(t *testing.T) {
 					{[]string{"'ey", "lan"}, 0, dummyDictionary["'eylan"]},
 				}},
 				LinePart{Raw: "."},
+			},
+		},
+		{
+			input: "Oel Nìyu Yorkìti tok",
+			expected: Line{
+				LinePart{Raw: "Oel", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"O", "el"}, 0, dummyDictionary["oel"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "Nìyu", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"nì", "yu"}, 0, dummyDictionary["nìyu"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "Yorkìti", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"yor", "kì"}, 0, dummyDictionary["yorkìti"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "tok", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"tok"}, 0, dummyDictionary["tok"]},
+				}},
 			},
 		},
 	}
