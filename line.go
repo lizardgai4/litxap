@@ -47,6 +47,7 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 				}
 				entry3, ok2 := mustDouble[strings.ToLower(entry2.Word)]
 				if ok2 {
+					lookup = entry2.Word
 					ok = true
 					entry = entry3
 					prefixes = entry2.Prefixes
@@ -63,7 +64,7 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 			syllables0, stress0 := litxaputil.RomanizeIPA(entry)
 
 			newEntry := Entry{
-				Word:      strings.Join(syllables0[0][0], ""),
+				Word:      lookup,
 				Syllables: syllables0[0][0],
 				Stress:    stress0[0][0],
 				Prefixes:  prefixes,

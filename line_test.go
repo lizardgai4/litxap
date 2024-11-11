@@ -181,7 +181,7 @@ func TestRunLine(t *testing.T) {
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "Yorkìti", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"Yor", "kì", "ti"}, 0, dummyDictionary["yorkìti"]},
+					{[]string{"Yor", "kì", "ti"}, 0, dummyDictionary["yorkì"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "tok", IsWord: true, Matches: []LinePartMatch{
