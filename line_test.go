@@ -28,6 +28,10 @@ var dummyDictionary = DummyDictionary{
 	"si":            *ParseEntry("s··i"),
 	"'eylan":        *ParseEntry("'ey.lan"),
 	"tok":           *ParseEntry("t··ok"),
+	// For making the tests work
+	"nìyu":    *ParseEntry("*nì.yu"),
+	"yorkìti": *ParseEntry("*yor.kì: -ti"),
+	"tsaheyl": *ParseEntry("tsa.*heyl"),
 }
 
 var mustDouble = map[string]string{
@@ -173,11 +177,11 @@ func TestRunLine(t *testing.T) {
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "Nìyu", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"nì", "yu"}, 0, dummyDictionary["nìyu"]},
+					{[]string{"Nì", "yu"}, 0, dummyDictionary["nìyu"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "Yorkìti", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"yor", "kì"}, 0, dummyDictionary["yorkìti"]},
+					{[]string{"Yor", "kì", "ti"}, 0, dummyDictionary["yorkìti"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "tok", IsWord: true, Matches: []LinePartMatch{
