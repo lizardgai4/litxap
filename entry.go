@@ -32,7 +32,9 @@ func (entry *Entry) GenerateSyllables() ([]string, int, int) {
 	stress := entry.Stress
 
 	syllables, offset := litxaputil.ApplyPrefixes(syllables, entry.Prefixes)
-	stress += offset
+	if stress != -1 {
+		stress += offset
+	}
 
 	if entry.InfixPos != nil && len(entry.Infixes) > 0 {
 		positions := *entry.InfixPos
@@ -79,7 +81,7 @@ func (entry *Entry) String() string {
 		}
 	}
 
-	inflected := len(entry.Prefixes) > 0 || len(entry.Suffixes) > 0 || len(entry.Infixes) > 0
+	inflected := entry.Stress == -1 || len(entry.Prefixes) > 0 || len(entry.Suffixes) > 0 || len(entry.Infixes) > 0
 	if inflected {
 		sb.WriteByte(':')
 	}
@@ -109,6 +111,10 @@ func (entry *Entry) String() string {
 			sb.WriteByte('-')
 			sb.WriteString(suffix)
 		}
+	}
+
+	if entry.Stress == -1 {
+		sb.WriteString(" no_stress")
 	}
 
 	if len(entry.Translation) > 0 {
@@ -166,6 +172,9 @@ func ParseEntry(s string) *Entry {
 			}
 			if strings.HasPrefix(token, "<") && strings.HasSuffix(token, ">") {
 				entry.Infixes = strings.Split(token[len("<"):len(token)-len(">")], ",")
+			}
+			if token == "no_stress" {
+				entry.Stress = -1
 			}
 		}
 	}

@@ -65,6 +65,16 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 	}
 	currLower := strings.ToLower(curr)
 
+	// Spaces
+	if strings.HasPrefix(curr, " ") {
+		matchedSyllables, next, n, stressOffset := nextSyllable(strings.TrimLeft(curr, " "), syllables, allowLenition, allowFuse)
+		if n > 0 {
+			matchedSyllables = append([]string{" "}, matchedSyllables...)
+		}
+
+		return matchedSyllables, next, n, stressOffset
+	}
+
 	// Edge case: contracted k.k -> k
 	if len(syllables) >= 2 && allowFuse {
 		for _, fusables := range [][]string{fusableTails, fusableMids} {
