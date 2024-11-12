@@ -8,13 +8,13 @@ import (
 	"unicode/utf8"
 )
 
-func RunLine(line string, dictionary Dictionary, mustDouble map[string]string) (Line, error) {
-	return ParseLine(line).Run(dictionary, mustDouble)
+func RunLine(line string, dictionary Dictionary) (Line, error) {
+	return ParseLine(line).Run(dictionary)
 }
 
 type Line []LinePart
 
-func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error) {
+func (line Line) Run(dict Dictionary) (Line, error) {
 	newLine := append(line[:0:0], line...)
 
 	for i, part := range newLine {
