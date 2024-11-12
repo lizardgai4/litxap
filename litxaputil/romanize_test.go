@@ -29,6 +29,9 @@ func TestRomanize(t *testing.T) {
 		{"sk'awŋ", [][][]string{{{"skxawng"}}}, [][]int{{-1}}},
 		{"tʃok'", [][][]string{{{"chokx"}}}, [][]int{{-1}}},
 		{"ʃ·awm", [][][]string{{{"shawm"}}}, [][]int{{-1}}},
+		{"sko", [][][]string{{{"sko"}}}, [][]int{{-1}}},
+		{"ftɛ", [][][]string{{{"fte"}}}, [][]int{{-1}}},
+
 		// Multi syllable
 		{"tɪ.ˈfmɛ.tok̚", [][][]string{{{"tì", "fme", "tok"}}}, [][]int{{1}}},
 		{"u.ˈvan", [][][]string{{{"u", "van"}}}, [][]int{{1}}},
