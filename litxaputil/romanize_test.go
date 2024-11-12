@@ -12,9 +12,10 @@ func TestRomanize(t *testing.T) {
 		expected [][][]string
 		stress   [][]int
 	}{
-		// One syllable
+		// Nothing to Romanize
 		{"", [][][]string{}, [][]int{}},
 		{"  ", [][][]string{}, [][]int{}},
+		// One syllable
 		{"ɛ", [][][]string{{{"e"}}}, [][]int{{-1}}},
 		{"ʔawk'", [][][]string{{{"'awkx"}}}, [][]int{{-1}}},
 		{"fko", [][][]string{{{"fko"}}}, [][]int{{-1}}},
@@ -28,7 +29,7 @@ func TestRomanize(t *testing.T) {
 		{"sk'awŋ", [][][]string{{{"skxawng"}}}, [][]int{{-1}}},
 		{"tʃok'", [][][]string{{{"chokx"}}}, [][]int{{-1}}},
 		{"ʃ·awm", [][][]string{{{"shawm"}}}, [][]int{{-1}}},
-		//Multi syllable
+		// Multi syllable
 		{"tɪ.ˈfmɛ.tok̚", [][][]string{{{"tì", "fme", "tok"}}}, [][]int{{1}}},
 		{"u.ˈvan", [][][]string{{{"u", "van"}}}, [][]int{{1}}},
 		{"ˈu.ɾan", [][][]string{{{"u", "ran"}}}, [][]int{{0}}},
@@ -57,8 +58,7 @@ func TestRomanize(t *testing.T) {
 		{"ˈnɪ.ˌju ˈjoɾ.kɪ", [][][]string{{{"nì", "yu"}, {"yor", "kì"}}}, [][]int{{0, 0}}},
 		{"t͡sawl sl·u", [][][]string{{{"tsawl"}, {"slu"}}}, [][]int{{-1, -1}}},
 		{"o.ˈɪsss s·i", [][][]string{{{"o", "ìsss"}, {"si"}}}, [][]int{{1, -1}}},
-		// Empty string
-		{"", [][][]string{}, [][]int{}},
+		{"to tɪ.ˈt͡sɛ.ɾi", [][][]string{{{"to"}, {"tì", "tse", "ri"}}}, [][]int{{-1, 1}}},
 	}
 
 	for _, row := range table {
