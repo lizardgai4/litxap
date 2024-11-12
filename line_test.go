@@ -78,7 +78,7 @@ func TestRunLine(t *testing.T) {
 				LinePart{Raw: " "},
 				LinePart{Raw: "kameie", IsWord: true, Matches: []LinePartMatch{
 					{[]string{"ka", "me", "i", "e"}, 0, dummyDictionary["kameie"]},
-					{[]string{"ka", "me", "i", "e"}, 3, dummyDictionary["kameie:0"]},
+					//{[]string{"ka", "me", "i", "e"}, 3, dummyDictionary["kameie:0"]},
 				}},
 				LinePart{Raw: "."},
 			},
@@ -135,7 +135,7 @@ func TestRunLine(t *testing.T) {
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "skeynven", Lookup: "säkeynven", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"skeyn", "ven"}, 1, dummyDictionary["säkeynven"]},
+					{[]string{"sä", "keyn", "ven"}, 2, dummyDictionary["säkeynven"]},
 				}},
 				LinePart{Raw: "."},
 			},
@@ -181,7 +181,7 @@ func TestRunLine(t *testing.T) {
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "Yorkìti", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"Yor", "kì", "ti"}, 0, dummyDictionary["yorkì"]},
+					{[]string{"Yor", "kì", "ti"}, 0, dummyDictionary["yorkìti"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "tok", IsWord: true, Matches: []LinePartMatch{

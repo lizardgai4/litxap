@@ -18,8 +18,6 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 	newLine := append(line[:0:0], line...)
 
 	for i, part := range newLine {
-		fmt.Println(part.Raw)
-		fmt.Println("ping")
 		if !part.IsWord {
 			continue
 		}
@@ -36,8 +34,6 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 			newLine[i].Matches = append(newLine[i].Matches, results0)
 			continue
 		}
-
-		fmt.Println("pong")
 
 		// Look it up in the normal dictionary now
 		results, err := dict.LookupEntries(lookup1)
