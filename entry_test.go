@@ -47,6 +47,7 @@ func TestParseEntry(t *testing.T) {
 		"t·a.r·on: tì- <us> -ti: hunt",
 		"t·ì.*r·an: tì- <us> -ìri: walk",
 		"sä.*pxor: : explosion",
+		"tsa.heyl: no_stress: (part of tsaheyl si)",
 	}
 
 	for _, row := range table {

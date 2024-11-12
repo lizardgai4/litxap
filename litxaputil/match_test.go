@@ -119,6 +119,12 @@ func TestMatchSyllables(t *testing.T) {
 			newStress:    1,
 		},
 		{
+			word: "tsaheyl seyki", syllables: "tsa.heyl.sey.ki",
+			root: 0, stress: 3,
+			newSyllables: "tsa.heyl. .sey.ki",
+			newStress:    4,
+		},
+		{
 			word: "sMunGe", syllables: "sä.mu.nge",
 			root: 0, stress: 1,
 			newSyllables: "sMu.nGe",
@@ -243,6 +249,12 @@ func TestMatchSyllables(t *testing.T) {
 			root: 0, stress: 0,
 			newSyllables: "'E.kxo.nge.yä",
 			newStress:    0,
+		},
+		{
+			word: "tsaheyl", syllables: "tsa.heyl",
+			root: 1, stress: -1,
+			newSyllables: "tsa.heyl",
+			newStress:    -1,
 		},
 	}
 

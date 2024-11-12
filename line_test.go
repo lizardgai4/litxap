@@ -25,8 +25,12 @@ var dummyDictionary = DummyDictionary{
 	"vola":          *ParseEntry("vol: -a"),
 	"tsafneioanghu": *ParseEntry("i.*o.ang: tsa-fne- -hu"),
 	"rä'ä":          *ParseEntry("rä.*'ä"),
-	"tsaheyl si":    *ParseEntry("tsa.heyl.* s··i"),
+	"tsaheyl si":    *ParseEntry("tsa.heyl.*s··i"),
 	"'eylan":        *ParseEntry("'ey.lan"),
+	"tsaheyl":       *ParseEntry("tsa.heyl: no_stress"),
+	"soli":          *ParseEntry("s··i: <ol>"),
+	"po":            *ParseEntry("po"),
+	"ikranhu":       *ParseEntry("ik.ran: -hu"),
 }
 
 var mustDouble = map[string]string{
@@ -35,8 +39,9 @@ var mustDouble = map[string]string{
 
 func TestRunLine(t *testing.T) {
 	table := []struct {
-		input    string
-		expected Line
+		input       string
+		expected    Line
+		withDoubles bool
 	}{
 		{
 			input: "Kaltxì, ma fmetokyu!",
@@ -131,14 +136,15 @@ func TestRunLine(t *testing.T) {
 			},
 		},
 		{
-			input: "Tsafneioanghu tsaheyl si rä'ä, ma 'eylan.",
+			input:       "Tsafneioanghu tsaheyl si rä'ä, ma 'eylan.",
+			withDoubles: true,
 			expected: Line{
 				LinePart{Raw: "Tsafneioanghu", IsWord: true, Matches: []LinePartMatch{
 					{[]string{"Tsa", "fne", "i", "o", "ang", "hu"}, 3, dummyDictionary["tsafneioanghu"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "tsaheyl si", IsWord: true, Matches: []LinePartMatch{
-					{[]string{"tsa", "heyl", " si"}, 2, dummyDictionary["tsaheyl si"]},
+					{[]string{"tsa", "heyl", " ", "si"}, 3, dummyDictionary["tsaheyl si"]},
 				}},
 				LinePart{Raw: " "},
 				LinePart{Raw: "rä'ä", IsWord: true, Matches: []LinePartMatch{
@@ -155,11 +161,39 @@ func TestRunLine(t *testing.T) {
 				LinePart{Raw: "."},
 			},
 		},
+		{
+			input:       "Po tsaheyl soli ikranhu.",
+			withDoubles: false,
+			expected: Line{
+				LinePart{Raw: "Po", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"Po"}, 0, dummyDictionary["po"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "tsaheyl", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"tsa", "heyl"}, -1, dummyDictionary["tsaheyl"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "soli", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"so", "li"}, 1, dummyDictionary["soli"]},
+				}},
+				LinePart{Raw: " "},
+				LinePart{Raw: "ikranhu", IsWord: true, Matches: []LinePartMatch{
+					{[]string{"ik", "ran", "hu"}, 0, dummyDictionary["ikranhu"]},
+				}},
+				LinePart{Raw: "."},
+			},
+		},
 	}
 
 	for _, row := range table {
 		t.Run(row.input, func(t *testing.T) {
-			res, err := RunLine(row.input, dummyDictionary, mustDouble)
+			var res Line
+			var err error
+			if row.withDoubles {
+				res, err = ParseLine(row.input).Merge(mustDouble).Run(dummyDictionary)
+			} else {
+				res, err = RunLine(row.input, dummyDictionary)
+			}
 			assert.NoError(t, err)
 			assert.Equal(t, row.expected, res)
 		})
@@ -167,8 +201,7 @@ func TestRunLine(t *testing.T) {
 }
 
 func TestRunLine_Fail(t *testing.T) {
-	doubles := map[string]string{"tsaheyl": "si"}
-	line, err := RunLine("Kaltxì, ma kifkey!", BrokenDictionary{}, doubles)
+	line, err := RunLine("Kaltxì, ma kifkey!", BrokenDictionary{})
 
 	assert.Error(t, err)
 	assert.Nil(t, line)
