@@ -6,9 +6,6 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
-
-	fwew_lib "github.com/fwew/fwew-lib/v5"
-	"github.com/gissleh/litxap/litxaputil"
 )
 
 func RunLine(line string, dictionary Dictionary, mustDouble map[string]string) (Line, error) {
@@ -21,6 +18,8 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 	newLine := append(line[:0:0], line...)
 
 	for i, part := range newLine {
+		fmt.Println(part.Raw)
+		fmt.Println("ping")
 		if !part.IsWord {
 			continue
 		}
@@ -30,57 +29,17 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 			lookup1 = part.Lookup
 		}
 
-		lookup := strings.ToLower(lookup1)
-
-		// See if it's tere
-		entry, ok := mustDouble[lookup]
-
-		var prefixes []string = nil
-		var suffixes []string = nil
-
-		// If it's not there, try deconjugating
-		if !ok {
-			entries := fwew_lib.Deconjugate(lookup)
-			for _, entry2 := range entries {
-				if entry2.InsistPOS != "any" && entry2.InsistPOS != "n." {
-					continue
-				}
-				entry3, ok2 := mustDouble[strings.ToLower(entry2.Word)]
-				if ok2 {
-					lookup = entry2.Word
-					ok = true
-					entry = entry3
-					prefixes = entry2.Prefixes
-					suffixes = entry2.Suffixes
-					// No infixes because these aren't verbs
-					break
-				}
-			}
-		}
+		results0, err0 := dict.LookupMultis(lookup1, mustDouble)
 
 		// If it's in either place, see the Romanization
-		if ok {
-			// Romanize and find stress from the IPA
-			syllables0, stress0 := litxaputil.RomanizeIPA(entry)
-
-			newEntry := Entry{
-				Word:      lookup,
-				Syllables: syllables0[0][0],
-				Stress:    stress0[0][0],
-				Prefixes:  prefixes,
-				Suffixes:  suffixes,
-			}
-			syllables, stress := RunWord(part.Raw, newEntry)
-			if syllables != nil && stress >= 0 {
-				newLine[i].Matches = append(newLine[i].Matches, LinePartMatch{
-					Syllables: syllables,
-					Stress:    stress,
-					Entry:     newEntry,
-				})
-			}
+		if err0 == nil {
+			newLine[i].Matches = append(newLine[i].Matches, results0)
 			continue
 		}
 
+		fmt.Println("pong")
+
+		// Look it up in the normal dictionary now
 		results, err := dict.LookupEntries(lookup1)
 
 		if err != nil {
