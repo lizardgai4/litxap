@@ -32,7 +32,7 @@ func (t DummyDictionary) LookupEntries(word string) ([]Entry, error) {
 	return res, nil
 }
 
-func (t DummyDictionary) LookupMultis(word string, multis map[string]string) (LinePartMatch, error) {
+func (t DummyDictionary) LookupMultis(word string) (LinePartMatch, error) {
 	a, err := t.LookupEntries(word)
 	if len(a) == 0 {
 		return LinePartMatch{}, err
@@ -47,7 +47,7 @@ func (t DummyDictionary) LookupMultis(word string, multis map[string]string) (Li
 
 type BrokenDictionary struct{}
 
-func (b BrokenDictionary) LookupMultis(word string, multis map[string]string) (LinePartMatch, error) {
+func (b BrokenDictionary) LookupMultis(word string) (LinePartMatch, error) {
 	return LinePartMatch{}, errors.New("500 something something")
 }
 

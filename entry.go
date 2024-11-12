@@ -179,7 +179,7 @@ func ParseEntry(s string) *Entry {
 
 type Dictionary interface {
 	LookupEntries(word string) ([]Entry, error)
-	LookupMultis(word string, mustDouble map[string]string) (LinePartMatch, error)
+	LookupMultis(word string) (LinePartMatch, error)
 }
 
 type MultiDictionary []Dictionary
@@ -212,12 +212,12 @@ func (dm MultiDictionary) LookupEntries(word string) ([]Entry, error) {
 	return entries, nil
 }
 
-func (dm MultiDictionary) LookupMultis(word string, multis map[string]string) (LinePartMatch, error) {
+func (dm MultiDictionary) LookupMultis(word string) (LinePartMatch, error) {
 	if len(dm) == 0 {
 		return LinePartMatch{}, ErrEntryNotFound
 	}
 
-	entries, err := dm[0].LookupMultis(word, multis)
+	entries, err := dm[0].LookupMultis(word)
 	if err != nil && !errors.Is(err, ErrEntryNotFound) {
 		return LinePartMatch{}, err
 	}

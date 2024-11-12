@@ -27,7 +27,7 @@ func (line Line) Run(dict Dictionary, mustDouble map[string]string) (Line, error
 			lookup1 = part.Lookup
 		}
 
-		results0, err0 := dict.LookupMultis(lookup1, mustDouble)
+		results0, err0 := dict.LookupMultis(lookup1)
 
 		// If it's in either place, see the Romanization
 		if err0 == nil {
