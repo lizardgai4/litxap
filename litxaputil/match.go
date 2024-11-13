@@ -191,6 +191,20 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 		return []string{curr[:len("syu")]}, curr[len("syu"):], 2, 2
 	}
 
+	// Edge case: contracted Xì-it => Xit
+	if len(syllables) >= 2 && strings.HasSuffix(syllables[0], "ì") {
+		s0 := strings.TrimRight(syllables[0], "ì")
+		s1 := syllables[1]
+
+		for _, core := range attachableCores {
+			if strings.HasPrefix(s1, core) {
+				if strings.HasPrefix(currLower, s0+s1) {
+					return []string{curr[:len(s0)+len(s1)]}, curr[len(s0)+len(s1):], 2, 2
+				}
+			}
+		}
+	}
+
 	// Edge case: po.yä -> pe.yä
 	if len(syllables) == 2 && (strings.HasSuffix(syllables[0], "a") || strings.HasSuffix(syllables[0], "o")) && (syllables[1] == "yä" || syllables[1] == "ye") {
 		l0 := len(syllables[0])
