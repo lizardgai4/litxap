@@ -191,14 +191,35 @@ func nextSyllable(curr string, syllables []string, allowLenition bool, allowFuse
 		return []string{curr[:len("syu")]}, curr[len("syu"):], 2, 2
 	}
 
+	// Edge case: contracted Xì-it => Xit
+	if len(syllables) >= 2 && strings.HasSuffix(syllables[0], "ì") {
+		s0 := strings.TrimRight(syllables[0], "ì")
+		s1 := syllables[1]
+
+		for _, core := range attachableCores {
+			if strings.HasPrefix(s1, core) {
+				if strings.HasPrefix(currLower, s0+s1) {
+					return []string{curr[:len(s0)+len(s1)]}, curr[len(s0)+len(s1):], 2, 2
+				}
+			}
+		}
+	}
+
 	// Edge case: po.yä -> pe.yä
-	if len(syllables) == 2 && (strings.HasSuffix(syllables[0], "a") || strings.HasSuffix(syllables[0], "o")) && (syllables[1] == "yä" || syllables[1] == "ye") {
+	if len(syllables) == 2 && (strings.HasSuffix(syllables[0], "a") || strings.HasSuffix(syllables[0], "o")) {
 		l0 := len(syllables[0])
 		l1 := len(syllables[1])
 
-		if strings.HasPrefix(currLower, syllables[0][:l0-1]+"e"+syllables[1]) {
-			return []string{curr[:l0], curr[l0 : l0+l1]}, curr[l0+l1:], 2, 2
+		if syllables[1] == "yä" || syllables[1] == "ye" {
+			if strings.HasPrefix(currLower, syllables[0][:l0-1]+"e"+syllables[1]) {
+				return []string{curr[:l0], curr[l0 : l0+l1]}, curr[l0+l1:], 2, 2
+			}
+		} else if syllables[1] == "y" {
+			if strings.HasPrefix(currLower, syllables[0][:l0-1]+"e"+syllables[1]) {
+				return []string{curr[:l0+l1]}, curr[l0+l1:], 2, 2
+			}
 		}
+
 	}
 
 	// Edge case: tsaw.ta -> tsa.ta
